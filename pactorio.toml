@@ -3,6 +3,7 @@ name = "crafting-hotkeys"
 version = "0.1.0"
 title = "Crafting Hotkeys"
 author = "figsoda"
+homepage = "https://github.com/figsoda/crafting-hotkeys"
 factorio_version = "0.17"
 description = "Adds hotkeys to craft items from your cursor or your quickbar. "
 
