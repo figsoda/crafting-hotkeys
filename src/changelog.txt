@@ -1,0 +1,22 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: 2019-10-29
+  Features:
+    - New thumbnail
+
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2019-10-29
+  Changes:
+    - Removed base from dependencies
+
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2019-10-28
+  Major Features:
+    - Hotkeys to craft items from cursor
+    - Hotkeys to craft items from quickbar
+  Info:
+    - Initial Release
+  Locale:
+    - English
