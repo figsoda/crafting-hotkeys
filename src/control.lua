@@ -4,28 +4,30 @@ local craft = function(player, item, count)
     local recipes = {}
     for name, recipe in pairs(player.force.recipes) do
         local products = recipe.products
-        for _, prod in pairs(products) do
-            if item.name == prod.name then
-                found = true
-                local craftable = player.get_craftable_count(name)
-                if craftable ~= 0 then
-                    local prob = prod.probability or 1
-                    local amt = prod.amount or (prod.amount_min + prod.amount_max) / 2
-                    local estimate = craftable * prob * amt
+        if recipe.enabled and not recipe.hidden then
+            for _, prod in pairs(products) do
+                if item.name == prod.name then
+                    found = true
+                    local craftable = player.get_craftable_count(name)
+                    if craftable ~= 0 then
+                        local prob = prod.probability or 1
+                        local amt = prod.amount or (prod.amount_min + prod.amount_max) / 2
+                        local est = craftable * prob * amt
 
-                    if estimate >= count then
-                        len = len + 1
-                        table.insert(recipes, {
-                            name = name,
-                            count = (count == 0 or estimate == count)
-                                and craftable
-                                or math.ceil(count / amt),
-                            prob = prob,
-                            only = #products == 1,
-                        })
+                        if est >= count then
+                            len = len + 1
+                            table.insert(recipes, {
+                                name = name,
+                                count = (count == 0 or est == count)
+                                    and craftable
+                                    or math.ceil(count / amt),
+                                prob = prob,
+                                only = #products == 1,
+                            })
+                        end
                     end
+                    break
                 end
-                break
             end
         end
     end
