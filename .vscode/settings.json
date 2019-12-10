@@ -1,7 +1,0 @@
-{
-    "Lua.diagnostics.globals": [
-        "data",
-        "game",
-        "script"
-    ]
-}
