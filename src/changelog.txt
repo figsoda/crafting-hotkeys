@@ -2,7 +2,7 @@
 Version: 0.2.0
 Data: 2020-01-21
   Major Features:
-    - Compatibilities with version Factorio 0.18
+    - Compatibilities with Factorio version 0.18
 
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.4
