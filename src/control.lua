@@ -11,7 +11,9 @@ local craft = function(player, item, count)
                     local craftable = player.get_craftable_count(name)
                     if craftable ~= 0 then
                         local prob = prod.probability or 1
-                        local amt = prod.amount or (prod.amount_min + prod.amount_max) / 2
+                        local amt = prod.amount
+                                        or (prod.amount_min + prod.amount_max)
+                                        / 2
                         local est = craftable * prob * amt
 
                         if est >= count then
@@ -19,8 +21,7 @@ local craft = function(player, item, count)
                             table.insert(recipes, {
                                 name = name,
                                 count = (count == 0 or est == count)
-                                    and craftable
-                                    or math.ceil(count / amt),
+                                    and craftable or math.ceil(count / amt),
                                 prob = prob,
                                 only = #products == 1,
                             })
@@ -42,14 +43,9 @@ local craft = function(player, item, count)
         local best = recipes[1]
         for i = 2, len do
             local recipe = recipes[i]
-            if recipe.count > best.count
-            or (recipe.count == best.count 
+            if recipe.count > best.count or (recipe.count == best.count
                 and (recipe.prob > best.prob
-                    or (recipe.prob == best.prob
-                        and not best.only
-                    )
-                )
-            ) then
+                    or (recipe.prob == best.prob and not best.only))) then
                 best = recipe
             end
         end
@@ -71,12 +67,10 @@ end
 register("cursor-", function(count)
     return function(event)
         local player = game.get_player(event.player_index)
-        local item = (player.cursor_stack ~= nil and player.cursor_stack.valid_for_read)
-            and player.cursor_stack.prototype
-            or player.cursor_ghost
-        if item ~= nil then
-            craft(player, item, count)
-        end
+        local item = (player.cursor_stack ~= nil
+                         and player.cursor_stack.valid_for_read)
+                         and player.cursor_stack.prototype or player.cursor_ghost
+        if item ~= nil then craft(player, item, count) end
     end
 end)
 
@@ -86,9 +80,7 @@ for i = 1, 10 do
             local player = game.get_player(event.player_index)
             local bar = player.get_active_quick_bar_page(1) or 1
             local item = player.get_quick_bar_slot((bar - 1) * 10 + i)
-            if item ~= nil then
-                craft(player, item, count)
-            end
+            if item ~= nil then craft(player, item, count) end
         end
     end)
 end

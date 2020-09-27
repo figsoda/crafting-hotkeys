@@ -19,6 +19,4 @@ local extendHotkey = function(prefix, key)
 end
 
 extendHotkey("cursor-", "G")
-for i = 1, 10 do
-    extendHotkey(string.format("shortcut-%x-", i), tostring(i % 10))
-end
+for i = 1, 10 do extendHotkey(string.format("shortcut-%x-", i), tostring(i % 10)) end
