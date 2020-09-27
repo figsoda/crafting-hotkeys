@@ -18,13 +18,15 @@ local craft = function(player, item, count)
 
                         if est >= count then
                             len = len + 1
-                            table.insert(recipes, {
-                                name = name,
-                                count = (count == 0 or est == count)
-                                    and craftable or math.ceil(count / amt),
-                                prob = prob,
-                                only = #products == 1,
-                            })
+                            table.insert(
+                                recipes, {
+                                    name = name,
+                                    count = (count == 0 or est == count)
+                                        and craftable or math.ceil(count / amt),
+                                    prob = prob,
+                                    only = #products == 1,
+                                }
+                            )
                         end
                     end
                     break
@@ -50,11 +52,9 @@ local craft = function(player, item, count)
             end
         end
 
-        player.begin_crafting({
-            count = best.count,
-            recipe = best.name,
-            silent = true,
-        })
+        player.begin_crafting(
+            {count = best.count, recipe = best.name, silent = true}
+        )
     end
 end
 
@@ -64,23 +64,28 @@ local register = function(prefix, handler)
     script.on_event(prefix .. "craft-all", handler(0))
 end
 
-register("cursor-", function(count)
-    return function(event)
-        local player = game.get_player(event.player_index)
-        local item = (player.cursor_stack ~= nil
-                         and player.cursor_stack.valid_for_read)
-                         and player.cursor_stack.prototype or player.cursor_ghost
-        if item ~= nil then craft(player, item, count) end
-    end
-end)
-
-for i = 1, 10 do
-    register(string.format("shortcut-%x-", i), function(count)
+register(
+    "cursor-", function(count)
         return function(event)
             local player = game.get_player(event.player_index)
-            local bar = player.get_active_quick_bar_page(1) or 1
-            local item = player.get_quick_bar_slot((bar - 1) * 10 + i)
+            local item = (player.cursor_stack ~= nil
+                             and player.cursor_stack.valid_for_read)
+                             and player.cursor_stack.prototype
+                             or player.cursor_ghost
             if item ~= nil then craft(player, item, count) end
         end
-    end)
+    end
+)
+
+for i = 1, 10 do
+    register(
+        string.format("shortcut-%x-", i), function(count)
+            return function(event)
+                local player = game.get_player(event.player_index)
+                local bar = player.get_active_quick_bar_page(1) or 1
+                local item = player.get_quick_bar_slot((bar - 1) * 10 + i)
+                if item ~= nil then craft(player, item, count) end
+            end
+        end
+    )
 end
