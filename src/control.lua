@@ -12,21 +12,20 @@ local craft = function(player, item, count)
                     if craftable ~= 0 then
                         local prob = prod.probability or 1
                         local amt = prod.amount
-                                        or (prod.amount_min + prod.amount_max)
-                                        / 2
+                            or (prod.amount_min + prod.amount_max)
+                                / 2
                         local est = craftable * prob * amt
 
                         if est >= count then
                             len = len + 1
-                            table.insert(
-                                recipes, {
-                                    name = name,
-                                    count = (count == 0 or est == count)
-                                        and craftable or math.ceil(count / amt),
-                                    prob = prob,
-                                    only = #products == 1,
-                                }
-                            )
+                            table.insert(recipes, {
+                                name = name,
+                                count = (count == 0 or est == count)
+                                        and craftable
+                                    or math.ceil(count / amt),
+                                prob = prob,
+                                only = #products == 1,
+                            })
                         end
                     end
                     break
@@ -37,24 +36,36 @@ local craft = function(player, item, count)
 
     if len == 0 then
         if found then
-            player.print({"messages.missing-ingredients", item.localised_name})
+            player.print({
+                "messages.missing-ingredients",
+                item.localised_name,
+            })
         else
-            player.print({"messages.no-recipe", item.localised_name})
+            player.print({ "messages.no-recipe", item.localised_name })
         end
     else
         local best = recipes[1]
         for i = 2, len do
             local recipe = recipes[i]
-            if recipe.count > best.count or (recipe.count == best.count
-                and (recipe.prob > best.prob
-                    or (recipe.prob == best.prob and not best.only))) then
+            if
+                recipe.count > best.count
+                or (
+                    recipe.count == best.count
+                    and (
+                        recipe.prob > best.prob
+                        or (recipe.prob == best.prob and not best.only)
+                    )
+                )
+            then
                 best = recipe
             end
         end
 
-        player.begin_crafting(
-            {count = best.count, recipe = best.name, silent = true}
-        )
+        player.begin_crafting({
+            count = best.count,
+            recipe = best.name,
+            silent = true,
+        })
     end
 end
 
@@ -64,28 +75,30 @@ local register = function(prefix, handler)
     script.on_event(prefix .. "craft-all", handler(0))
 end
 
-register(
-    "cursor-", function(count)
-        return function(event)
-            local player = game.get_player(event.player_index)
-            local item = (player.cursor_stack ~= nil
-                             and player.cursor_stack.valid_for_read)
-                             and player.cursor_stack.prototype
-                             or player.cursor_ghost
-            if item ~= nil then craft(player, item, count) end
+register("cursor-", function(count)
+    return function(event)
+        local player = game.get_player(event.player_index)
+        local item = (
+                    player.cursor_stack ~= nil
+                    and player.cursor_stack.valid_for_read
+                )
+                and player.cursor_stack.prototype
+            or player.cursor_ghost
+        if item ~= nil then
+            craft(player, item, count)
         end
     end
-)
+end)
 
 for i = 1, 10 do
-    register(
-        string.format("shortcut-%x-", i), function(count)
-            return function(event)
-                local player = game.get_player(event.player_index)
-                local bar = player.get_active_quick_bar_page(1) or 1
-                local item = player.get_quick_bar_slot((bar - 1) * 10 + i)
-                if item ~= nil then craft(player, item, count) end
+    register(string.format("shortcut-%x-", i), function(count)
+        return function(event)
+            local player = game.get_player(event.player_index)
+            local bar = player.get_active_quick_bar_page(1) or 1
+            local item = player.get_quick_bar_slot((bar - 1) * 10 + i)
+            if item ~= nil then
+                craft(player, item, count)
             end
         end
-    )
+    end)
 end
