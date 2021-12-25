@@ -1,4 +1,8 @@
 local craft = function(player, item, count)
+  if player.controller_type ~= defines.controllers.character then
+    return
+  end
+
   local found = false
   local len = 0
   local recipes = {}
@@ -18,9 +22,8 @@ local craft = function(player, item, count)
               len = len + 1
               table.insert(recipes, {
                 name = name,
-                count = (count == 0 or est == count) and craftable or math.ceil(
-                  count / amt
-                ),
+                count = (count == 0 or est == count) and craftable
+                  or math.ceil(count / amt),
                 prob = prob,
                 only = #products == 1,
               })
